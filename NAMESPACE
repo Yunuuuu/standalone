@@ -3,3 +3,6 @@
 importFrom(rlang,abort)
 importFrom(rlang,caller_arg)
 importFrom(rlang,caller_env)
+importFrom(rlang,ffi_standalone_check_number_1.0.7)
+importFrom(rlang,ffi_standalone_is_bool_1.0.7)
+importFrom(rlang,is_string)

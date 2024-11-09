@@ -8,8 +8,10 @@
 #
 # ## Changelog
 # 2024-11-10:
-# - `obj_type_friendly()` gains a length argument to control whether to show the
-#   length of the vector.
+# - `obj_type_friendly()` gains a `length` argument to control whether to show
+#   the length of the vector.
+# - `stop_input_type()` gains a `show_length` argument passed to
+#   `obj_type_friendly`.
 #
 # 2024-02-14:
 # - `obj_type_friendly()` now works for S7 objects.
