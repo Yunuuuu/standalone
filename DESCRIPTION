@@ -1,0 +1,13 @@
+Package: standalone
+Title: Standalone Scripts for package delopment
+Version: 0.0.0.9000
+Authors@R: 
+    person("Yun", "Peng", , "yunyunp96@163.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2801-3332"))
+Description: Provide standalone scripts for `usethis::use_standalone()`.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    cli,
+    rlang
