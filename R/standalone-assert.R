@@ -325,3 +325,5 @@ assert_s3_class <- function(x, is_class, what, ...,
         arg = arg, call = call
     )
 }
+
+# nocov end

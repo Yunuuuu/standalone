@@ -63,3 +63,5 @@ if_else <- function(condition, true, false, na = NULL) {
 
     out
 }
+
+# nocov end

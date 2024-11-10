@@ -5,6 +5,8 @@
 # license: https://unlicense.org
 # ---
 
+# nocov start
+
 # Provides a minimal shim API to format message elements consistently
 # with cli in packages that can't depend on it. If available, cli is
 # used to format the elements. Otherwise a fallback format is used.
@@ -89,3 +91,5 @@ style_run <- function(x, target = NULL) {
         out
     }
 })
+
+# nocov end
