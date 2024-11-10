@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-obj-type.R
-# last-updated: 2024-02-14
+# last-updated: 2024-11-10
 # license: https://unlicense.org
 # imports: rlang (>= 1.1.0)
 # ---
