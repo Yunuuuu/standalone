@@ -6,7 +6,7 @@
 # imports: [vctrs (>= 0.5.0), rlang]
 # ---
 
-# when developing R package, instead of depending on `dplyr`
+# when developing R package, instead of depending on `dplyr`, `tidyr`, `tibble`.
 # we prefer use the basic function from `vctrs`
 #
 # Note: these functions won't check arguments
