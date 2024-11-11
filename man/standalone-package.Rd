@@ -4,7 +4,7 @@
 \name{standalone-package}
 \alias{standalone}
 \alias{standalone-package}
-\title{standalone: Standalone Scripts for package delopment}
+\title{standalone: Standalone Scripts for package development}
 \description{
 Provide standalone scripts for `usethis::use_standalone()`.
 }
