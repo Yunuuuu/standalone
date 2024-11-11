@@ -10,7 +10,7 @@
 #
 # Note:
 # 1. these functions won't check arguments
-# 2. Please use `perl`, `fixed` to control the patter instead of using
+# 2. Please use `perl`, `fixed` argument to control the pattern instead of using
 #    regex(), fixed() function.
 
 # ## Changelog
