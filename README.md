@@ -20,7 +20,6 @@ usethis::use_standalone("Yunuuuu/standalone")
  - `assert`: Argument-checking helpers to ensure inputs are valid.
  - `cli`: Functions to format messages using the `cli` package if it is available.
  - `obj-type`: Functions to generate informative messages about an object's class.
- - `stringr`: Base R functions that mimic `stringr` syntax, enabling string manipulation without requiring `stringr` pacakge.
+ - `stringr`: Base R functions that mimic `stringr` syntax.
  - `vctrs`: Provides base implementations for functions from `dplyr`, `tidyr`,
-   and `tibble` using `vctrs`, allowing data manipulation functionalities
-   without needing these package dependencies.
+   and `tibble` using `vctrs`
