@@ -22,5 +22,5 @@ usethis::use_standalone("Yunuuuu/standalone")
  - `cli`: Functions to format messages using the `cli` package if it is available.
  - `obj-type`: Functions to generate informative messages about an object's class.
  - `stringr`: Base R functions that mimic `stringr` syntax.
- - `vctrs`: Provides base implementations for functions from `dplyr`, `tidyr`,
+ - `tibble`: Provides base implementations for functions from `dplyr`, `tidyr`,
    and `tibble` using `vctrs`
