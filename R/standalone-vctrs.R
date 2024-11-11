@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-vctrs.R
-# last-updated: 2024-11-10
+# last-updated: 2024-11-11
 # license: https://unlicense.org
 # imports: [vctrs (>= 0.5.0), rlang]
 # ---
