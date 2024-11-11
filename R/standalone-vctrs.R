@@ -21,6 +21,7 @@
 # ## Changelog
 # 2024-11-12
 # - Added `rename`
+# - coalesce() now will return value immediately when no missing value exists.
 #
 # 2024-11-11:
 # - Added `inner_join`
@@ -186,7 +187,12 @@ coalesce <- function(...) {
     dots <- vec_recycle_common(...)
     out <- .subset2(dots, 1L)
     for (i in 2:...length()) {
-        out <- replace_na(out, .subset2(dots, i))
+        missing <- vec_detect_missing(out)
+        if (any(missing)) {
+            out <- vec_assign(out, missing, value = .subset2(dots, i))
+        } else {
+            return(out)
+        }
     }
     out
 }
