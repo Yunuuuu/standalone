@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-vctrs.R
-# last-updated: 2024-11-11
+# last-updated: 2024-11-12
 # license: https://unlicense.org
 # imports: [vctrs (>= 0.5.0), rlang]
 # ---
@@ -11,14 +11,17 @@
 #
 # Note: these functions won't check arguments
 #
-# Since `vctrs` also depends on `rlang`, it's no harm to use function from
-# `rlang`.
+# Since `vctrs` also depends on `rlang` and `cli`, it has harm to use function
+# from `rlang` and `cli`.
 #
 # Please initialize the package docs and import vctrs
 # 1. run `usethis::use_package_doc()`
 # 2. in package docs, please add #' @import vctrs
 
 # ## Changelog
+# 2024-11-12
+# - Added `rename`
+#
 # 2024-11-11:
 # - Added `inner_join`
 # - Added `left_join`
@@ -122,6 +125,24 @@ join_bind <- function(x, y, suffix) {
         names(y)[index] <- paste0(y_names[index], .subset(suffix, 2L))
     }
     vec_cbind(x, y, .name_repair = "check_unique")
+}
+
+#' Rename elements in a list, data.frame or vector
+#'
+#' This is akin to `dplyr::rename` and `plyr::rename`. It renames elements given
+#' as names in the `replace` vector to the values in the `replace` vector
+#' without touching elements not referenced.
+#'
+#' @param x A data.frame or a named vector or list
+#' @param replace A named character vector. The names identifies the elements in
+#' `x` that should be renamed and the values gives the new names.
+#'
+#' @return `x`, with new names according to `replace`
+#' @noRd
+rename <- function(x, replace) {
+    nms <- names(x)
+    names(x) <- vec_assign(nms, match(names(replace), nms), replace)
+    x
 }
 
 if_else <- function(condition, true, false, na = NULL) {
