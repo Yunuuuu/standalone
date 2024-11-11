@@ -23,4 +23,5 @@ usethis::use_standalone("Yunuuuu/standalone")
  - `obj-type`: Functions to generate informative messages about an object's class.
  - `stringr`: Base R functions that mimic `stringr` syntax.
  - `tibble`: Provides base implementations for functions from `dplyr`, `tidyr`,
-   and `tibble` using `vctrs`
+   and `tibble` using `vctrs`.
+ - `purrr`: Base R functions that mimic `purrr` syntax.
