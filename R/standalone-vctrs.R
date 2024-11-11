@@ -11,6 +11,9 @@
 #
 # Note: these functions won't check arguments
 #
+# Since `vctrs` also depends on `rlang`, it's no harm to use function from
+# `rlang`.
+#
 # Please initialize the package docs and import vctrs
 # 1. run `usethis::use_package_doc()`
 # 2. in package docs, please add #' @import vctrs
