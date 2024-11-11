@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^Scratch\.RConsole$
 ^\.radian_history$
+^README\.Rmd$
