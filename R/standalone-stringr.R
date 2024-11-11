@@ -1,9 +1,26 @@
-str_which <- function(string, pattern, ..., fixed = FALSE) {
-    grep(
-        pattern = pattern, x = string, ...,
-        perl = !fixed, value = FALSE,
-        fixed = fixed
-    )
+# ---
+# repo: Yunuuuu/standalone
+# file: standalone-stringr.R
+# last-updated: 2024-11-11
+# license: https://unlicense.org
+# ---
+
+# when developing R package, instead of depending on `stringr`
+# we prefer use the base function
+#
+# Note:
+# 1. these functions won't check arguments
+# 2. Please use `perl`, `fixed` to control the patter instead of using
+#    regex(), fixed() function.
+
+# ## Changelog
+# 2024-11-11:
+# First release
+#
+# nocov start
+
+str_which <- function(string, pattern, ...) {
+    grep(pattern = pattern, x = string, ..., value = FALSE)
 }
 
 str_c <- function(..., sep = "", collapse = NULL) {
@@ -16,87 +33,63 @@ str_c <- function(..., sep = "", collapse = NULL) {
     out
 }
 
-str_detect <- function(string, pattern, ..., fixed = FALSE) {
-    grepl(pattern = pattern, x = string, ..., perl = !fixed, fixed = fixed)
+str_detect <- function(string, pattern, ...) {
+    grepl(pattern = pattern, x = string, ...)
 }
 
-str_subset <- function(string, pattern, ..., fixed = FALSE) {
-    grep(
-        pattern = pattern, x = string, ...,
-        perl = !fixed, value = TRUE,
-        fixed = fixed
-    )
+str_subset <- function(string, pattern, ...) {
+    grep(pattern = pattern, x = string, ..., value = TRUE)
 }
 
-str_replace <- function(string, pattern, replacement, ..., fixed = FALSE) {
-    sub(
-        pattern = pattern, replacement = replacement, x = string,
-        perl = !fixed, fixed = fixed, ...
-    )
+str_replace <- function(string, pattern, replacement, ...) {
+    sub(pattern = pattern, replacement = replacement, x = string, ...)
 }
 
-str_remove <- function(string, pattern, ..., fixed = FALSE) {
-    sub(
-        pattern = pattern, replacement = "", x = string,
-        perl = !fixed, fixed = fixed, ...
-    )
+str_remove <- function(string, pattern, ...) {
+    sub(pattern = pattern, replacement = "", x = string, ...)
 }
 
-str_replace_all <- function(string, pattern, replacement, ..., fixed = FALSE) {
-    gsub(
-        pattern = pattern, replacement = replacement, x = string,
-        perl = !fixed, fixed = fixed, ...
-    )
+str_replace_all <- function(string, pattern, replacement, ...) {
+    gsub(pattern = pattern, replacement = replacement, x = string, ...)
 }
 
-str_remove_all <- function(string, pattern, ..., fixed = FALSE) {
-    gsub(
-        pattern = pattern, replacement = "", x = string,
-        perl = !fixed, fixed = fixed, ...
-    )
+str_remove_all <- function(string, pattern, ...) {
+    gsub(pattern = pattern, replacement = "", x = string, ...)
 }
 
-str_extract <- function(string, pattern, ..., fixed = FALSE) {
-    matches <- regexpr(pattern, string, perl = !fixed, ..., fixed = fixed)
+str_extract <- function(string, pattern, ...) {
+    matches <- regexpr(pattern, string, ...)
     start <- as.vector(matches)
     end <- start + attr(matches, "match.length") - 1L
     start[start == -1L] <- NA_integer_
     substr(string, start, end)
 }
-str_extract_all <- function(string, pattern, ..., fixed = FALSE) {
+
+str_extract_all <- function(string, pattern, ...) {
     regmatches(
         string,
-        m = gregexpr(
-            pattern = pattern, text = string,
-            perl = !fixed, ..., fixed = fixed
-        )
+        m = gregexpr(pattern = pattern, text = string, ...)
     )
 }
 
 # split string based on pattern, Only split once, Return a list of character,
 # the length of every element is two
-str_split_fixed <- function(string, pattern, ..., fixed = FALSE) {
+str_split_fixed <- function(string, pattern, ...) {
     regmatches(
         string,
-        regexpr(
-            pattern = pattern, text = string,
-            perl = !fixed, ..., fixed = fixed
-        ),
+        regexpr(pattern = pattern, text = string, ...),
         invert = TRUE
     )
 }
 
-str_split <- function(string, pattern, fixed = FALSE) {
-    strsplit(x = string, split = pattern, fixed = fixed, perl = !fixed)
+str_split <- function(string, pattern, ...) {
+    strsplit(x = string, split = pattern, ...)
 }
 
-str_match <- function(string, pattern, ..., fixed = FALSE) {
+str_match <- function(string, pattern, ...) {
     out <- regmatches(
         string,
-        regexec(
-            pattern = pattern, text = string,
-            perl = !fixed, ..., fixed = fixed
-        ),
+        regexec(pattern = pattern, text = string, ...),
         invert = FALSE
     )
     out <- lapply(out, function(x) {
@@ -107,28 +100,24 @@ str_match <- function(string, pattern, ..., fixed = FALSE) {
     out
 }
 
-str_match_all <- function(string, pattern, ..., fixed = FALSE) {
+str_match_all <- function(string, pattern, ...) {
     regmatches(
         string,
-        gregexec(
-            pattern = pattern, text = string,
-            perl = !fixed, ..., fixed = fixed
-        ),
+        gregexec(pattern = pattern, text = string, ...),
         invert = FALSE
     )
 }
 
-str_count <- function(string, pattern, ..., fixed = FALSE) {
+str_count <- function(string, pattern, ...) {
     # This information can be gleaned from gregexpr() in base A list of the same
     #  length as text each element of which is an integer vector giving all
     #  starting position of the match or −1 if there is none.
-    loc <- gregexpr(
-        pattern = pattern, text = string,
-        perl = !fixed, ..., fixed = fixed
-    )
+    loc <- gregexpr(pattern = pattern, text = string, ...)
     vapply(loc, function(x) sum(x > 0L), integer(1L), USE.NAMES = FALSE)
 }
 
 str_trim <- function(string, which = "both") {
     trimws(string, which = which, whitespace = "[\\h\\v]")
 }
+
+# nocov end
