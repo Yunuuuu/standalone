@@ -3,6 +3,7 @@
 # file: standalone-cli.R
 # last-updated: 2024-11-10
 # license: https://unlicense.org
+# dependencies: [standalone-pkg.R]
 # ---
 
 # nocov start
@@ -71,25 +72,7 @@ style_run <- function(x, target = NULL) {
 }
 
 .cli_has_cli <- function(version = "3.0.0") {
-    .cli_is_installed("cli", version = version)
+    is_installed("cli", version = version)
 }
-
-.cli_is_installed <- local({
-    cache <- new.env(parent = emptyenv())
-    function(pkg, version = NULL) {
-        id <- if (is.null(version)) pkg else paste(pkg, version, sep = ":")
-        out <- cache[[id]]
-        if (is.null(out)) {
-            if (is.null(version)) {
-                out <- requireNamespace(pkg, quietly = TRUE)
-            } else {
-                out <- requireNamespace(pkg, quietly = TRUE) &&
-                    utils::packageVersion(pkg) >= version
-            }
-            cache[[id]] <<- out
-        }
-        out
-    }
-})
 
 # nocov end
