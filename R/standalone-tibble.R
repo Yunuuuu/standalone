@@ -1,6 +1,6 @@
 # ---
 # repo: Yunuuuu/standalone
-# file: standalone-vctrs.R
+# file: standalone-tibble.R
 # last-updated: 2024-11-14
 # license: https://unlicense.org
 # imports: [vctrs (>= 0.5.0), rlang]
