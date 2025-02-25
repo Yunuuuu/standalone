@@ -19,6 +19,7 @@
 
 # ## Changelog
 # 2025-02-26:
+# - Add `install_polars`
 # - Add `use_polars`
 # - Add `series_lapply`
 #
@@ -26,6 +27,12 @@
 
 pl <- NULL
 
+#' Helper function to install `polars` package
+#'
+#' Helper function to install `polars` package from
+#' [`r-multiverse`](https://community.r-multiverse.org).
+#'
+#' @export
 install_polars <- function() {
     orepos <- getOption("repos")
     options(repos = c("https://community.r-multiverse.org", orepos))
@@ -39,6 +46,9 @@ use_polars <- function(reason) {
             if (missing(reason)) {
                 reason <- sprintf("to use `%s` package", pkg_nm())
             }
+            orepos <- getOption("repos")
+            options(repos = c("https://community.r-multiverse.org", orepos))
+            on.exit(options(repos = orepos), add = TRUE)
             rlang::check_installed("polars", reason = reason)
         }
         utils::assignInNamespace("pl", polars::pl, ns = pkg_namespace())
