@@ -7,7 +7,7 @@
 # ---
 
 # This file contains several helper functions for working with the polars
-# package. 
+# package.
 
 # Note: Since `polars` is not available on `CRAN`, if you plan to publish your
 # package on `CRAN`, please include the following in your `DESCRIPTION` file:
@@ -24,13 +24,26 @@
 
 pl <- NULL
 
-use_polars <- function(reason = NULL) {
+use_polars <- function(reason) {
     if (is.null(pl)) {
-        orepos <- getOption("repos")
-        options(repos = c("https://community.r-multiverse.org", orepos))
-        on.exit(options(repos = orepos))
-        rlang::check_installed("polars", reason = reason)
-        pl <<- polars::pl
+        if (!rlang::is_installed("polars")) {
+            orepos <- getOption("repos")
+            options(repos = c("https://community.r-multiverse.org", orepos))
+            on.exit(options(repos = orepos), add = TRUE)
+            if (missing(reason)) {
+                reason <- sprintf(
+                    "to use `%s` package",
+                    utils::packageName(environment())
+                )
+            }
+            rlang::check_installed("polars", reason = reason)
+        }
+        ns <- topenv(environment())
+        if (bindingIsLocked("pl", ns)) {
+            unlockBinding("pl", ns)
+            on.exit(lockBinding("pl", ns), add = TRUE)
+        }
+        assign("pl", polars::pl, envir = ns, inherits = FALSE)
     }
 }
 
