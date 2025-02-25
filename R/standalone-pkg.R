@@ -3,6 +3,7 @@
 # file: standalone-pkg.R
 # last-updated: 2025-02-26
 # license: https://unlicense.org
+# imports: [utils]
 # ---
 
 # This file contains several helper functions for package checking and
@@ -12,6 +13,8 @@
 # 2025-02-26:
 # - Add `is_installed`
 # - Add `install_pkgs`
+# - Add `pkg_nm`
+# - Add `pkg_namespace`
 #
 # nocov start
 
@@ -40,5 +43,9 @@ install_pkgs <- function(pkgs) {
         utils::install.packages(pkgs)
     }
 }
+
+pkg_nm <- function() utils::packageName(environment())
+
+pkg_namespace <- function() topenv(environment())
 
 # nocov end
