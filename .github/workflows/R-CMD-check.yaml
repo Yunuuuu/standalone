@@ -42,6 +42,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          extra-repositories: https://community.r-multiverse.org
           extra-packages: any::rcmdcheck
           needs: check
 
