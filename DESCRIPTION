@@ -13,5 +13,7 @@ Imports:
     rlang (>= 1.1.0),
     vctrs
 Suggests: 
+    polars,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Additional_repositories: https://community.r-multiverse.org
