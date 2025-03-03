@@ -56,7 +56,10 @@ style_run <- function(x, target = NULL) {
 }
 
 .cli_vec_format <- function(x, envir = parent.frame()) {
-    vapply(x, cli::format_inline, character(1L), .envir = envir)
+    vapply(
+        x, getExportedValue("cli", "format_inline"),
+        character(1L), .envir = envir, USE.NAMES = FALSE # styler: off
+    )
 }
 
 .cli_style_inline_link <- function(x, target, span, fallback = "`%s`") {
