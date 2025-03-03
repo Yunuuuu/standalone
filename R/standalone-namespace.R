@@ -66,6 +66,7 @@ new_namespace <- function(public = list(), private = list(), active = list()) {
     namespace$private <- new.env(parent = emptyenv())
     namespace$active <- new.env(parent = emptyenv())
     list2env(public, namespace$public)
+    list2env(private, namespace$private)
     list2env(active, namespace$active)
     namespace
 }
