@@ -41,25 +41,29 @@ all_functions <- function(x) {
     all(vapply(x, is.function, logical(1L), USE.NAMES = FALSE))
 }
 
-new_namespace <- function(public = list(), active = list()) {
+new_namespace <- function(public = list(), private = list(), active = list()) {
     if (!all_named(public) || !all_named(active)) {
         stop("All elements of public, and active must be named.")
     }
-    allnames <- c(names(public), names(active))
+    allnames <- c(names(public), names(private), names(active))
     if (anyDuplicated(allnames)) {
         stop("All items in public, and active must have unique names.")
     }
-    if (any("self" == allnames)) {
-        stop("Items cannot use reserved names 'self'.")
+    if (any(c("self", "private") %in% allnames)) {
+        stop("Items cannot use reserved names 'self' or 'private'.")
     }
     if (!all_functions(public)) {
         stop("All items in public must be functions.")
+    }
+    if (!all_functions(private)) {
+        stop("All items in private must be functions.")
     }
     if (!all_functions(active)) {
         stop("All items in active must be functions.")
     }
     namespace <- new.env(parent = emptyenv())
     namespace$public <- new.env(parent = emptyenv())
+    namespace$private <- new.env(parent = emptyenv())
     namespace$active <- new.env(parent = emptyenv())
     list2env(public, namespace$public)
     list2env(active, namespace$active)
@@ -68,25 +72,27 @@ new_namespace <- function(public = list(), active = list()) {
 
 # function used to create `$.ClassName` and `[[.ClassName` method
 new_method <- function(.__class__, .__namespace__) {
-    # we use special name to prevent override other function (also known as private methods) defined this package
+    # we use special name to prevent from overriding other function (also known
+    # as private methods) defined in this package
     force(.__class__)
     force(.__namespace__)
     function(self, .__name__) {
         force(self)
+        private <- .subset2(.__namespace__, "private") # nolint
+
         # insert a new stack to the function, used to find `self`, `self` should
         # be the data value.
-        .__enclos_env__ <- environment()
         .__public_env__ <- .subset2(.__namespace__, "public")
         .__active_env__ <- .subset2(.__namespace__, "active")
         if (exists(.__name__, envir = .__public_env__, inherits = FALSE)) {
             .__fn__ <- .subset2(.__public_env__, .__name__)
-            environment(.__fn__) <- .__enclos_env__
+            environment(.__fn__) <- environment()
             .__fn__
-        } else if (exists(.__name__, envir = .__active_env__,  # styler: off
-                          inherits = FALSE)) {                 # styler: off
+        } else if (exists(.__name__, envir = .__active_env__,   # styler: off
+                          inherits = FALSE)) {                  # styler: off
             .__fn__ <- .subset2(.__active_env__, .__name__)
-            environment(.__fn__) <- .__enclos_env__
-            makeActiveBinding(".__active_fn__", .__fn__, .__enclos_env__)
+            environment(.__fn__) <- environment()
+            makeActiveBinding(".__active_fn__", .__fn__, environment())
             .__active_fn__ # nolint
         } else {
             stop(sprintf(
