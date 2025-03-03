@@ -47,7 +47,7 @@ new_namespace <- function(public = list(), private = list(), active = list()) {
     }
     allnames <- c(names(public), names(private), names(active))
     if (anyDuplicated(allnames)) {
-        stop("All items in public, and active must have unique names.")
+        stop("All items in public, private, and active must have unique names.")
     }
     if (any(c("self", "private") %in% allnames)) {
         stop("Items cannot use reserved names 'self' or 'private'.")
