@@ -24,6 +24,11 @@ namespace <- function(Class, public = list(), private = list(), active = list(),
     registerS3method("[", Class, function(x, i) {
         stop("Please use `$` or `[[` method instead")
     }, envir = getNamespace(package))
+    registerS3method(".DollarNames", Class, function(x, pattern) {
+        names <- ls(ns, all.names = TRUE)
+        names <- names[grepl(pattern, names)]
+        setdiff(names, c("self", "private"))
+    }, envir = getNamespace(package))
     ns
 }
 
