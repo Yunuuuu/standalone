@@ -26,6 +26,8 @@
 #
 # nocov start
 
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 is_installed <- local({
     cache <- new.env(parent = emptyenv())
     function(pkg, version = NULL) {
