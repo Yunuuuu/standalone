@@ -6,7 +6,7 @@
 # imports: [utils]
 # ---
 
-# create New namespace, which is just an environment
+# Here, we split the R6 object between the object entity and methods or fields
 # 1. We can use `self` to refer the input data (other methods or fields can
 #    be directly acquired by `self$`)
 # 2. We can add private methods and fields
