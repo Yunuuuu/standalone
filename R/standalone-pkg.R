@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-pkg.R
-# last-updated: 2025-03-03
+# last-updated: 2025-03-04
 # license: https://unlicense.org
 # imports: [utils]
 # ---
@@ -11,6 +11,9 @@
 # other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
+# 2025-03-04:
+# - Add `%||%`
+#
 # 2025-03-03:
 # - Add `rd_collect_family`
 # - Add `oxford_and`
@@ -100,6 +103,7 @@ oxford_comma <- function(x, sep = ", ", final = "and") {
     }
 }
 
+# Need `roxygen2` package
 #' @description add `@eval rd_collect_family("myfamily")` to the functions in
 #' your package. This will automatically generate a section listing all
 #' functions tagged with `@family myfamily`.
