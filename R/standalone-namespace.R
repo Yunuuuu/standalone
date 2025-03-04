@@ -7,23 +7,23 @@
 # ---
 
 # create New namespace, which is just an environment
-# 1. For every new namespace, we must add a new S3 method `$.ClassName` and
-#    `[[.ClassName` to bind the namespace into the special class
-#    (dispatch_method).
-# 2. We can use `self` to refer the input data (other methods or fields can
+# 1. We can use `self` to refer the input data (other methods or fields can
 #    be directly acquired by `self$`)
-# 3. For a sub-namespace, we must define an `active` function to change the
-#    underlying class of the data value in the parent namepace. Then add a new
-#    S3 method `$.ClassName` and `[[.ClassName` to bind the sub-namespace into
-#    the new class
-# 4. we can also check the data value match a special data type for the
-#    sub-namespace
-namespace <- function(Class, public = list(), active = list()) {
-    ns <- new_namespace(public, active)
-    method <- new_method(Class, ns)
+# 2. We can add private methods and fields
+# 3. We must create new class to bind this namespace
+namespace <- function(Class, public = list(), private = list(), active = list(),
+                      parent_env = parent.frame()) {
+    ns <- new_namespace(
+        public = public, private = private,
+        active = active, parent_env = parent_env
+    )
+    method <- subset_method(Class, ns)
     package <- utils::packageName()
     registerS3method("$", Class, method, envir = getNamespace(package))
     registerS3method("[[", Class, method, envir = getNamespace(package))
+    registerS3method("[", Class, function(x, i) {
+        stop("Please use `$` or `[[` method instead")
+    }, envir = getNamespace(package))
     ns
 }
 
@@ -41,9 +41,37 @@ all_functions <- function(x) {
     all(vapply(x, is.function, logical(1L), USE.NAMES = FALSE))
 }
 
-new_namespace <- function(public = list(), private = list(), active = list()) {
-    if (!all_named(public) || !all_named(active)) {
-        stop("All elements of public, and active must be named.")
+# Return all the functions in a list.
+get_functions <- function(x) {
+    funcs <- vapply(x, is.function, logical(1), USE.NAMES = FALSE)
+    if (all(!funcs)) {
+        return(NULL)
+    }
+    x[funcs]
+}
+
+# Return all the non-functions in a list.
+get_nonfunctions <- function(x) {
+    funcs <- vapply(x, is.function, logical(1), USE.NAMES = FALSE)
+    if (all(funcs)) {
+        return(NULL)
+    }
+    x[!funcs]
+}
+
+assign_func_envs <- function(objs, target_env) {
+    if (is.null(target_env)) return(objs) # styler: off
+
+    lapply(objs, function(f) {
+        if (is.function(f)) environment(f) <- target_env
+        f
+    })
+}
+
+new_namespace <- function(public = list(), private = list(), active = list(),
+                          parent_env = parent.frame()) {
+    if (!all_named(public) || !all_named(private) || !all_named(active)) {
+        stop("All elements of public, private, and active must be named.")
     }
     allnames <- c(names(public), names(private), names(active))
     if (anyDuplicated(allnames)) {
@@ -52,49 +80,55 @@ new_namespace <- function(public = list(), private = list(), active = list()) {
     if (any(c("self", "private") %in% allnames)) {
         stop("Items cannot use reserved names 'self' or 'private'.")
     }
-    if (!all_functions(public)) {
-        stop("All items in public must be functions.")
-    }
-    if (!all_functions(private)) {
-        stop("All items in private must be functions.")
-    }
     if (!all_functions(active)) {
         stop("All items in active must be functions.")
     }
-    namespace <- new.env(parent = emptyenv())
-    namespace$public <- new.env(parent = emptyenv())
-    namespace$private <- new.env(parent = emptyenv())
-    namespace$active <- new.env(parent = emptyenv())
-    list2env(public, namespace$public)
-    list2env(private, namespace$private)
-    list2env(active, namespace$active)
-    namespace
+
+    # used to bind `self` and `private` pointer
+    enclos_env <- new.env(parent = parent_env)
+    if (length(private)) {
+        enclos_env$private <- new.env(parent = emptyenv())
+        lockEnvironment(enclos_env$private)
+    }
+
+    public_fields <- get_nonfunctions(public)
+    public_methods <- get_functions(public)
+    public_methods <- assign_func_envs(public_methods, enclos_env)
+    if (length(public_fields)) list2env(public_fields, enclos_env)
+    if (length(public_methods)) list2env(public_methods, enclos_env)
+
+    private_fields <- get_nonfunctions(private)
+    private_methods <- get_functions(private)
+    private_methods <- assign_func_envs(private_methods, enclos_env)
+    if (length(private_fields)) list2env(private_fields, enclos_env$private)
+    if (length(private_methods)) {
+        list2env(private_methods, enclos_env$private)
+        for (name in names(private_methods)) {
+            lockBinding(name, enclos_env$private)
+        }
+    }
+
+    active <- assign_func_envs(active, enclos_env)
+    for (i in seq_along(active)) {
+        makeActiveBinding(
+            names(active)[i], .subset2(active, i),
+            enclos_env
+        )
+    }
+    enclos_env
 }
 
 # function used to create `$.ClassName` and `[[.ClassName` method
-new_method <- function(.__class__, .__namespace__) {
+subset_method <- function(.__class__, .__namespace__) {
     # we use special name to prevent from overriding other function (also known
     # as private methods) defined in this package
     force(.__class__)
     force(.__namespace__)
     function(self, .__name__) {
-        force(self)
-        private <- .subset2(.__namespace__, "private") # nolint
-
-        # insert a new stack to the function, used to find `self`, `self` should
-        # be the data value.
-        .__public_env__ <- .subset2(.__namespace__, "public")
-        .__active_env__ <- .subset2(.__namespace__, "active")
-        if (exists(.__name__, envir = .__public_env__, inherits = FALSE)) {
-            .__fn__ <- .subset2(.__public_env__, .__name__)
-            environment(.__fn__) <- environment()
-            .__fn__
-        } else if (exists(.__name__, envir = .__active_env__,   # styler: off
-                          inherits = FALSE)) {                  # styler: off
-            .__fn__ <- .subset2(.__active_env__, .__name__)
-            environment(.__fn__) <- environment()
-            makeActiveBinding(".__active_fn__", .__fn__, environment())
-            .__active_fn__ # nolint
+        .__namespace__$self <- self
+        on.exit(rm(list = "self", envir = .__namespace__, inherits = FALSE))
+        if (exists(.__name__, envir = .__namespace__, inherits = FALSE)) {
+            get(.__name__, envir = .__namespace__, inherits = FALSE)
         } else {
             stop(sprintf(
                 "No method `%s()` found for Class `%s`", .__name__, .__class__
@@ -102,5 +136,3 @@ new_method <- function(.__class__, .__namespace__) {
         }
     }
 }
-
-utils::globalVariables(".__active_fn__")
