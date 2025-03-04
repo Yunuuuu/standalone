@@ -86,10 +86,7 @@ new_namespace <- function(public = list(), private = list(), active = list(),
 
     # used to bind `self` and `private` pointer
     enclos_env <- new.env(parent = parent_env)
-    if (length(private)) {
-        enclos_env$private <- new.env(parent = emptyenv())
-        lockEnvironment(enclos_env$private)
-    }
+    enclos_env$private <- new.env(parent = emptyenv())
 
     public_fields <- get_nonfunctions(public)
     public_methods <- get_functions(public)
@@ -107,6 +104,7 @@ new_namespace <- function(public = list(), private = list(), active = list(),
             lockBinding(name, enclos_env$private)
         }
     }
+    lockEnvironment(enclos_env$private)
 
     active <- assign_func_envs(active, enclos_env)
     for (i in seq_along(active)) {
