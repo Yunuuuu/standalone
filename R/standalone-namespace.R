@@ -116,10 +116,8 @@ new_namespace <- function(public = list(), private = list(), active = list(),
     enclos_env
 }
 
-# function used to create `$.ClassName` and `[[.ClassName` method
+# function used to create `$.Class` and `[[.Class` method
 subset_method <- function(.__class__, .__namespace__) {
-    # we use special name to prevent from overriding other function (also known
-    # as private methods) defined in this package
     force(.__class__)
     force(.__namespace__)
     function(self, .__name__) {
