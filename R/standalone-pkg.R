@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-pkg.R
-# last-updated: 2025-03-04
+# last-updated: 2025-03-08
 # license: https://unlicense.org
 # imports: [utils]
 # ---
@@ -11,6 +11,10 @@
 # other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
+# 2025-03-08:
+# - Add `pkg_extdata`
+# - Add `defer`
+#
 # 2025-03-04:
 # - Add `%||%`
 #
@@ -61,12 +65,22 @@ pkg_nm <- function() utils::packageName(environment())
 
 pkg_namespace <- function() topenv(environment())
 
-# Need `rlang` package
+pkg_extdata <- function(..., mustWork = TRUE) {
+    system.file("extdata", ..., package = pkg_nm(), mustWork = mustWork)
+}
+
+# Need `rlang` package, can support `quosure`
 set_exit <- function(expr, envir = parent.frame(), after = TRUE, add = TRUE) {
     expr <- getExportedValue("rlang", "enquo")(expr)
-    thunk <- as.call(list(
-        getExportedValue("rlang", "new_function")(list(), expr)
-    ))
+    defer(
+        getExportedValue("rlang", "eval_tidy")(expr),
+        envir = envir, after = after, add
+    )
+}
+
+# Just like `withr::defer()`, don't depend on `rlang` package
+defer <- function(expr, envir = parent.frame(), after = TRUE, add = TRUE) {
+    thunk <- as.call(list(function() expr))
     do.call(base::on.exit, list(thunk, add = add, after = after), envir = envir)
 }
 
