@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-pkg.R
-# last-updated: 2025-03-08
+# last-updated: 2025-03-10
 # license: https://unlicense.org
 # imports: [utils]
 # ---
@@ -11,6 +11,9 @@
 # other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
+# 2025-03-10:
+# - Add `on_exit`
+#
 # 2025-03-08:
 # - Add `pkg_extdata`
 # - Add `defer`
@@ -70,7 +73,7 @@ pkg_extdata <- function(..., mustWork = TRUE) {
 }
 
 # Need `rlang` package, can support `quosure`
-set_exit <- function(expr, envir = parent.frame(), after = TRUE, add = TRUE) {
+on_exit <- function(expr, envir = parent.frame(), after = TRUE, add = TRUE) {
     expr <- getExportedValue("rlang", "enquo")(expr)
     defer(
         getExportedValue("rlang", "eval_tidy")(expr),
