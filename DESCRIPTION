@@ -13,6 +13,7 @@ Imports:
     vctrs
 Suggests: 
     cli,
+    dplyr,
     polars,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
