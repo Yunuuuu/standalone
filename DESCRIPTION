@@ -18,3 +18,15 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Additional_repositories: https://community.r-multiverse.org
+Collate: 
+    'package-doc.R'
+    'standalone-assert.R'
+    'standalone-cli.R'
+    'standalone-namespace.R'
+    'standalone-obj-type.R'
+    'standalone-pkg.R'
+    'standalone-polars.R'
+    'standalone-purrr.R'
+    'standalone-stringr.R'
+    'standalone-tibble.R'
+    'test-namespace.R'
