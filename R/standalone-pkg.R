@@ -13,7 +13,7 @@
 # ## Changelog
 # 2025-03-30
 # - Add `use_github_release`
-# 
+#
 # 2025-03-12
 # - Add `from_namespace`
 #
@@ -85,7 +85,9 @@ pkg_extdata <- function(..., mustWork = TRUE) {
 # package.
 use_github_release <- function(publish = TRUE) {
     usethis_ns <- getNamespace("usethis")
-    usethis <- function(fun) getFromNamespace(fun, usethis_ns)
+    usethis <- function(fun, ...) {
+        get(x = fun, envir = usethis_ns, inherits = FALSE, ...)
+    }
     usethis("check_is_package")("use_github_release()")
     tr <- usethis("target_repo")(
         github_get = TRUE,
