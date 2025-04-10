@@ -1,7 +1,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-pkg.R
-# last-updated: 2025-03-30
+# last-updated: 2025-04-10
 # license: https://unlicense.org
 # imports: [utils]
 # ---
@@ -11,6 +11,9 @@
 # other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
+# 2025-04-10
+# - simplify `from_namespace`
+#
 # 2025-03-30
 # - Add `use_github_release`
 #
@@ -124,40 +127,11 @@ use_github_release <- function(publish = TRUE) {
 }
 
 ############################################################
-#' @param ... The last argument must be a string representing the variable name.
-#' For all others, provide a list of formulas where:
-#' - The left-hand side should return a single boolean value and may reference a
-#'   variable named `"version"`, which represents the current package version.
-#' - The right-hand side should be a string specifying the variable name.
-#' @examples
-#' from_namespace(
-#'     "ggplot2",
-#'     version < "3.5.1" ~ "complete_theme",
-#'     "plot_theme"
-#' )
-#' @noRd
 from_namespace <- local({
     namespace <- NULL
-    function(package, ..., mode = "any") {
-        if (is.null(namespace)) {
-            namespace <<- getNamespace(package)
-        }
-        envir <- parent.frame()
-        dots <- as.list(substitute(...()))
-        # The last one should be a string
-        name <- eval(.subset2(dots, length(dots)), envir = envir)
-        if (length(dots) > 1L) {
-            version_envir <- new.env(parent = envir)
-            version_envir$version <- utils::packageVersion(package)
-            for (dot in dots[-length(dots)]) {
-                # evaluate in the version environemnt
-                if (eval(.subset2(dot, 2L), envir = version_envir)) {
-                    name <- eval(.subset2(dot, 3L), envir = envir)
-                    break
-                }
-            }
-        }
-        get(name, envir = namespace, inherits = FALSE, mode = mode)
+    function(package, name, mode = "any") {
+        if (is.null(namespace)) namespace <<- getNamespace(package)
+        get(x = name, envir = namespace, inherits = FALSE, mode = mode)
     }
 })
 
