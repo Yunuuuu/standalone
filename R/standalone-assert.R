@@ -112,7 +112,10 @@ IS_NUMBER_oob <- 2
 
 #' @importFrom rlang abort
 .rlang_allow_number <- function(x, exit_code, allow_decimal,
-                                min, max, allow_na, allow_null) {
+                                min = NULL,
+                                max = NULL,
+                                allow_na = FALSE,
+                                allow_null = FALSE) {
     if (allow_decimal) {
         what <- "a number"
     } else {
