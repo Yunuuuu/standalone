@@ -278,9 +278,7 @@ assert_bool <- function(x,
                         allow_null = FALSE,
                         arg = caller_arg(x),
                         call = caller_env()) {
-    if (!missing(x) &&
-        .rlang_check_bool(x, allow_na, allow_null)
-    ) {
+    if (!missing(x) && .rlang_check_bool(x, allow_na, allow_null)) {
         return(invisible(NULL))
     }
 
